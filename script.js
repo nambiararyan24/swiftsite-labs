@@ -75,13 +75,8 @@ window.addEventListener('scroll', () => {
 document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.getElementById('contactForm');
     
-    console.log('Form element found:', contactForm); // Debug log
-    
     if (contactForm) {
-        console.log('Adding submit event listener'); // Debug log
-        
         contactForm.addEventListener('submit', async function(e) {
-            console.log('Form submit event triggered'); // Debug log
             e.preventDefault();
             e.stopPropagation();
             
@@ -90,14 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = document.getElementById('email').value.trim();
             const message = document.getElementById('message').value.trim();
             
-            console.log('Form values:', { name, email, message }); // Debug log
-            
             // Simple validation
             if (name && email && message) {
                 const submitButton = contactForm.querySelector('button[type="submit"]');
                 
                 if (!submitButton) {
-                    console.error('Submit button not found!');
                     alert('Error: Submit button not found. Please refresh the page.');
                     return;
                 }
@@ -108,13 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitButton.disabled = true;
                 submitButton.textContent = 'Sending...';
                 
-                console.log('Button state changed to Sending...'); // Debug log
-                
                 try {
                     // Use Vercel serverless function as proxy
                     const apiURL = '/api/submit-form';
-                    
-                    console.log('Sending request to:', apiURL); // Debug log
                     
                     const response = await fetch(apiURL, {
                         method: 'POST',
@@ -129,10 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         })
                     });
                     
-                    console.log('Response status:', response.status); // Debug log
-                    
                     const result = await response.json();
-                    console.log('Response data:', result); // Debug log
                     
                     if (response.ok && result.success) {
                         alert('Thank you for your message! We will get back to you soon.');
@@ -153,8 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Please fill in all fields.');
             }
         });
-    } else {
-        console.error('Contact form not found!'); // Debug log
     }
 });
 
