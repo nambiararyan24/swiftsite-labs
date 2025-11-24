@@ -75,7 +75,7 @@ window.addEventListener('scroll', () => {
 const contactForm = document.getElementById('contactForm');
 
 if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
+    contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         e.stopPropagation();
         
@@ -93,82 +93,40 @@ if (contactForm) {
             submitButton.disabled = true;
             submitButton.textContent = 'Sending...';
             
-            // Google Apps Script Web App URL
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbxQHUlHAjOO-wshNxqayvPX-Q3rnPRv-b_7cfJYDB0c11az6PbUoGCJ6aKXX4X16HoZ/exec';
-            
-            // Create a unique iframe name
-            const iframeName = 'gas_iframe_' + Date.now();
-            
-            // Create hidden iframe
-            const iframe = document.createElement('iframe');
-            iframe.name = iframeName;
-            iframe.id = iframeName;
-            iframe.style.cssText = 'position:absolute;width:1px;height:1px;left:-9999px;top:-9999px;border:none;visibility:hidden;';
-            document.body.appendChild(iframe);
-            
-            // Create form that will submit to iframe
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = scriptURL;
-            form.target = iframeName;
-            form.style.cssText = 'display:none;';
-            
-            // Add form fields
-            const data = {
-                name: name,
-                email: email,
-                message: message,
-                timestamp: new Date().toISOString()
-            };
-            
-            Object.keys(data).forEach(key => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = data[key];
-                form.appendChild(input);
-            });
-            
-            document.body.appendChild(form);
-            
-            // Listen for iframe load to know when submission is complete
-            let submissionComplete = false;
-            const checkSubmission = () => {
-                if (!submissionComplete) {
-                    submissionComplete = true;
-                    
-                    // Clean up
-                    setTimeout(() => {
-                        try {
-                            if (form.parentNode) document.body.removeChild(form);
-                            if (iframe.parentNode) document.body.removeChild(iframe);
-                        } catch (err) {
-                            console.log('Cleanup:', err);
-                        }
-                        
-                        // Show success and reset
-                        alert('Thank you for your message! We will get back to you soon.');
-                        contactForm.reset();
-                        submitButton.disabled = false;
-                        submitButton.textContent = originalButtonText;
-                    }, 500);
-                }
-            };
-            
-            // Try to detect when iframe loads (submission complete)
             try {
-                iframe.onload = checkSubmission;
-            } catch (e) {
-                // Fallback: just wait and assume success
-                setTimeout(checkSubmission, 2000);
+                // Use Vercel serverless function as proxy
+                const apiURL = '/api/submit-form';
+                
+                const response = await fetch(apiURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        message: message,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    alert('Thank you for your message! We will get back to you soon.');
+                    contactForm.reset();
+                } else {
+                    throw new Error(result.error || 'Form submission failed');
+                }
+                
+            } catch (error) {
+                console.error('Form submission error:', error);
+                alert('Sorry, there was an error sending your message. Please try again later or contact us directly at contact@swiftsitelabs.com');
+            } finally {
+                // Re-enable button
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
             }
-            
-            // Submit the form
-            form.submit();
-            
-            // Fallback timeout in case iframe.onload doesn't fire
-            setTimeout(checkSubmission, 3000);
-            
         } else {
             alert('Please fill in all fields.');
         }
