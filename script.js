@@ -96,50 +96,60 @@ if (contactForm) {
                 // Google Apps Script Web App URL
                 const scriptURL = 'https://script.google.com/macros/s/AKfycbxQHUlHAjOO-wshNxqayvPX-Q3rnPRv-b_7cfJYDB0c11az6PbUoGCJ6aKXX4X16HoZ/exec';
                 
-                // Create a hidden iframe for form submission (most reliable method)
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.name = 'hidden_iframe_' + Date.now();
-                document.body.appendChild(iframe);
+                // Create a hidden iframe for submission
+                const iframeId = 'hidden-iframe-' + Date.now();
+                let iframe = document.getElementById(iframeId);
                 
-                // Create a temporary form
-                const tempForm = document.createElement('form');
-                tempForm.method = 'POST';
-                tempForm.action = scriptURL;
-                tempForm.target = iframe.name;
-                tempForm.style.display = 'none';
+                if (!iframe) {
+                    iframe = document.createElement('iframe');
+                    iframe.id = iframeId;
+                    iframe.name = iframeId;
+                    iframe.style.display = 'none';
+                    iframe.style.width = '0';
+                    iframe.style.height = '0';
+                    iframe.style.border = 'none';
+                    document.body.appendChild(iframe);
+                }
                 
-                // Add form fields
-                const fields = {
-                    name: name,
-                    email: email,
-                    message: message,
-                    timestamp: new Date().toISOString()
-                };
+                // Create a temporary form that submits to the iframe
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = scriptURL;
+                form.target = iframeId;
+                form.style.display = 'none';
                 
-                Object.keys(fields).forEach(key => {
+                // Add all form fields
+                const addField = (name, value) => {
                     const input = document.createElement('input');
                     input.type = 'hidden';
-                    input.name = key;
-                    input.value = fields[key];
-                    tempForm.appendChild(input);
-                });
+                    input.name = name;
+                    input.value = value;
+                    form.appendChild(input);
+                };
                 
-                document.body.appendChild(tempForm);
+                addField('name', name);
+                addField('email', email);
+                addField('message', message);
+                addField('timestamp', new Date().toISOString());
                 
-                // Submit form
-                tempForm.submit();
+                document.body.appendChild(form);
                 
-                // Clean up and show success message
+                // Submit the form
+                form.submit();
+                
+                // Clean up form after submission
                 setTimeout(() => {
-                    document.body.removeChild(tempForm);
-                    document.body.removeChild(iframe);
-                    alert('Thank you for your message! We will get back to you soon.');
-                    contactForm.reset();
+                    if (form.parentNode) {
+                        document.body.removeChild(form);
+                    }
                 }, 1000);
                 
+                // Show success message
+                alert('Thank you for your message! We will get back to you soon.');
+                contactForm.reset();
+                
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Form submission error:', error);
                 alert('Sorry, there was an error sending your message. Please try again later or contact us directly at contact@swiftsitelabs.com');
             } finally {
                 // Re-enable button
