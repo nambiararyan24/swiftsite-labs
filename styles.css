@@ -412,16 +412,16 @@ section {
     .about-text {
         flex: 1;
         display: block;
-        align-items: stretch;
+        position: relative;
+        padding-left: 360px;
     }
 
     .about-logo {
-        flex: 0 0 auto;
+        position: absolute;
+        left: 0;
+        top: 0;
         max-width: 320px;
         margin: 0;
-        float: left;
-        margin-right: 2rem;
-        margin-bottom: 1rem;
         order: 0;
     }
 
