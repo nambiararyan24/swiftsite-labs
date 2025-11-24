@@ -381,6 +381,7 @@ section {
     display: block;
     opacity: 0.95;
     box-shadow: var(--shadow-sm);
+    margin: 0 auto 1.5rem;
 }
 
 @media (min-width: 768px) {
@@ -390,13 +391,30 @@ section {
         gap: 3rem;
     }
 
-    .about-logo {
-        flex: 0 0 auto;
-        max-width: 320px;
-    }
-
     .about-text {
         flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .about-logo {
+        order: 0;
+        max-width: 320px;
+        margin: 0 2rem 1.5rem 0;
+        align-self: flex-start;
+        float: left;
+    }
+
+    .about-text .section-title {
+        order: 1;
+    }
+
+    .about-text p {
+        order: 2;
+    }
+
+    .about-text .about-features {
+        order: 3;
     }
 }
 
@@ -847,10 +865,13 @@ section {
         flex-direction: column;
         width: 100%;
         gap: 1rem;
+        padding: 0 1rem;
     }
 
     .hero-buttons .btn {
         width: 100%;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
     }
 
     .section-header {
@@ -895,17 +916,13 @@ section {
     }
 
     .about-logo {
-        order: 2;
         max-width: 280px;
         width: 100%;
-    }
-
-    .about-text {
-        order: 1;
+        margin: 1.5rem auto;
     }
 
     .about-text .section-title {
-        margin-bottom: 1.5rem;
+        margin-bottom: 0;
     }
 
     .services-grid {
