@@ -96,63 +96,85 @@ if (contactForm) {
                 // Google Apps Script Web App URL
                 const scriptURL = 'https://script.google.com/macros/s/AKfycbxQHUlHAjOO-wshNxqayvPX-Q3rnPRv-b_7cfJYDB0c11az6PbUoGCJ6aKXX4X16HoZ/exec';
                 
-                // Create a hidden iframe for submission
-                const iframeId = 'hidden-iframe-' + Date.now();
-                let iframe = document.getElementById(iframeId);
+                // Create a unique iframe name to avoid conflicts
+                const iframeName = 'hidden_iframe_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 
-                if (!iframe) {
-                    iframe = document.createElement('iframe');
-                    iframe.id = iframeId;
-                    iframe.name = iframeId;
-                    iframe.style.display = 'none';
-                    iframe.style.width = '0';
-                    iframe.style.height = '0';
-                    iframe.style.border = 'none';
-                    document.body.appendChild(iframe);
-                }
+                // Create and append hidden iframe BEFORE creating the form
+                const iframe = document.createElement('iframe');
+                iframe.name = iframeName;
+                iframe.id = iframeName;
+                iframe.style.position = 'fixed';
+                iframe.style.top = '-10000px';
+                iframe.style.left = '-10000px';
+                iframe.style.width = '1px';
+                iframe.style.height = '1px';
+                iframe.style.border = 'none';
+                iframe.style.opacity = '0';
+                iframe.style.pointerEvents = 'none';
                 
-                // Create a temporary form that submits to the iframe
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = scriptURL;
-                form.target = iframeId;
-                form.style.display = 'none';
+                // Append iframe first
+                document.body.appendChild(iframe);
                 
-                // Add all form fields
-                const addField = (name, value) => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = name;
-                    input.value = value;
-                    form.appendChild(input);
-                };
-                
-                addField('name', name);
-                addField('email', email);
-                addField('message', message);
-                addField('timestamp', new Date().toISOString());
-                
-                document.body.appendChild(form);
-                
-                // Submit the form
-                form.submit();
-                
-                // Clean up form after submission
+                // Wait a tiny bit for iframe to be ready
                 setTimeout(() => {
-                    if (form.parentNode) {
-                        document.body.removeChild(form);
+                    // Create form element
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = scriptURL;
+                    form.target = iframeName;
+                    form.style.display = 'none';
+                    form.setAttribute('accept-charset', 'UTF-8');
+                    
+                    // Create and append hidden inputs
+                    const fields = {
+                        'name': name,
+                        'email': email,
+                        'message': message,
+                        'timestamp': new Date().toISOString()
+                    };
+                    
+                    for (const [key, value] of Object.entries(fields)) {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = key;
+                        input.value = value;
+                        form.appendChild(input);
                     }
-                }, 1000);
-                
-                // Show success message
-                alert('Thank you for your message! We will get back to you soon.');
-                contactForm.reset();
+                    
+                    // Append form to body
+                    document.body.appendChild(form);
+                    
+                    // Submit form (this will submit to the iframe, not redirect the page)
+                    form.submit();
+                    
+                    // Clean up and show success after a delay
+                    setTimeout(() => {
+                        // Remove form and iframe
+                        try {
+                            if (form && form.parentNode) {
+                                document.body.removeChild(form);
+                            }
+                            if (iframe && iframe.parentNode) {
+                                document.body.removeChild(iframe);
+                            }
+                        } catch (cleanupError) {
+                            console.log('Cleanup error (non-critical):', cleanupError);
+                        }
+                        
+                        // Show success message
+                        alert('Thank you for your message! We will get back to you soon.');
+                        contactForm.reset();
+                        
+                        // Re-enable button
+                        submitButton.disabled = false;
+                        submitButton.textContent = originalButtonText;
+                    }, 2000);
+                }, 100);
                 
             } catch (error) {
                 console.error('Form submission error:', error);
                 alert('Sorry, there was an error sending your message. Please try again later or contact us directly at contact@swiftsitelabs.com');
-            } finally {
-                // Re-enable button
+                // Re-enable button on error
                 submitButton.disabled = false;
                 submitButton.textContent = originalButtonText;
             }
