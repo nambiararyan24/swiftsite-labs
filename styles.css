@@ -663,6 +663,93 @@ section {
     transform: translateX(2px);
 }
 
+/* Reviews Section */
+.reviews {
+    background: var(--bg-light);
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.review-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-color);
+}
+
+.review-content {
+    flex: 1;
+}
+
+.review-text {
+    color: var(--text-dark);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.review-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.review-avatar {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.review-avatar svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke-width: 2;
+}
+
+.review-info {
+    flex: 1;
+}
+
+.review-name {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.25rem;
+}
+
+.review-role {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    letter-spacing: -0.01em;
+}
+
 /* FAQ Section */
 .faq {
     background: var(--bg-white);
@@ -1126,6 +1213,25 @@ section {
         padding-top: 8rem;
     }
 
+    .reviews-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .review-card {
+        padding: 1.5rem;
+    }
+
+    .review-avatar {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .review-avatar svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
     .faq-question {
         padding: 1.25rem;
         font-size: 1rem;
@@ -1216,6 +1322,26 @@ section {
 
     .about-logo {
         max-width: 200px;
+    }
+
+    .reviews-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .review-card {
+        padding: 1.25rem;
+    }
+
+    .review-text {
+        font-size: 0.9375rem;
+    }
+
+    .review-name {
+        font-size: 0.9375rem;
+    }
+
+    .review-role {
+        font-size: 0.8125rem;
     }
 
     .faq {

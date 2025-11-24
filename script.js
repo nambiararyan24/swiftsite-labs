@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Observe service cards and other elements
 document.addEventListener('DOMContentLoaded', () => {
-    const animatedElements = document.querySelectorAll('.service-card, .about-content, .project-card, .contact-content, .process-step, .faq-item');
+    const animatedElements = document.querySelectorAll('.service-card, .about-content, .project-card, .contact-content, .process-step, .faq-item, .review-card');
     
     animatedElements.forEach(el => {
         el.style.opacity = '0';
