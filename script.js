@@ -71,9 +71,41 @@ window.addEventListener('scroll', () => {
     lastScroll = currentScroll;
 });
 
+// Success Modal Functions
+function showSuccessModal() {
+    const modal = document.getElementById('successModal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function hideSuccessModal() {
+    const modal = document.getElementById('successModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
 // Contact Form Handling
 document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.getElementById('contactForm');
+    const successModal = document.getElementById('successModal');
+    const modalClose = document.querySelector('.modal-close');
+    
+    // Close modal handlers
+    if (modalClose) {
+        modalClose.addEventListener('click', hideSuccessModal);
+    }
+    
+    if (successModal) {
+        successModal.addEventListener('click', function(e) {
+            if (e.target === successModal) {
+                hideSuccessModal();
+            }
+        });
+    }
     
     if (contactForm) {
         contactForm.addEventListener('submit', async function(e) {
@@ -120,8 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const result = await response.json();
                     
                     if (response.ok && result.success) {
-                        alert('Thank you for your message! We will get back to you soon.');
                         contactForm.reset();
+                        showSuccessModal();
                     } else {
                         throw new Error(result.error || 'Form submission failed');
                     }
