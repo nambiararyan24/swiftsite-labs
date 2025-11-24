@@ -382,6 +382,16 @@ section {
     opacity: 0.95;
     box-shadow: var(--shadow-sm);
     margin: 0 auto 1.5rem;
+    order: 1;
+}
+
+.about-text {
+    order: 0;
+    width: 100%;
+}
+
+.about-text .section-title {
+    text-align: center;
 }
 
 @media (min-width: 768px) {
@@ -391,30 +401,20 @@ section {
         gap: 3rem;
     }
 
-    .about-text {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
     .about-logo {
         order: 0;
+        flex: 0 0 auto;
         max-width: 320px;
-        margin: 0 2rem 1.5rem 0;
-        align-self: flex-start;
-        float: left;
+        margin: 0;
+    }
+
+    .about-text {
+        order: 1;
+        flex: 1;
     }
 
     .about-text .section-title {
-        order: 1;
-    }
-
-    .about-text p {
-        order: 2;
-    }
-
-    .about-text .about-features {
-        order: 3;
+        text-align: left;
     }
 }
 
@@ -918,7 +918,12 @@ section {
     .about-logo {
         max-width: 280px;
         width: 100%;
-        margin: 1.5rem auto;
+        margin: 1.5rem auto 0;
+        order: 1;
+    }
+
+    .about-text {
+        order: 0;
     }
 
     .about-text .section-title {
