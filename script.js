@@ -188,9 +188,38 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
+// FAQ Accordion
+document.addEventListener('DOMContentLoaded', () => {
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        
+        if (question) {
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Close all other FAQ items
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current item
+                if (isActive) {
+                    item.classList.remove('active');
+                } else {
+                    item.classList.add('active');
+                }
+            });
+        }
+    });
+});
+
 // Observe service cards and other elements
 document.addEventListener('DOMContentLoaded', () => {
-    const animatedElements = document.querySelectorAll('.service-card, .about-content, .project-card, .contact-content');
+    const animatedElements = document.querySelectorAll('.service-card, .about-content, .project-card, .contact-content, .process-step, .faq-item');
     
     animatedElements.forEach(el => {
         el.style.opacity = '0';
