@@ -75,13 +75,14 @@ window.addEventListener('scroll', () => {
 const contactForm = document.getElementById('contactForm');
 
 if (contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
+    contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
+        e.stopPropagation();
         
         // Get form values
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const message = document.getElementById('message').value;
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
         
         // Simple validation
         if (name && email && message) {
@@ -92,92 +93,84 @@ if (contactForm) {
             submitButton.disabled = true;
             submitButton.textContent = 'Sending...';
             
-            try {
-                // Google Apps Script Web App URL
-                const scriptURL = 'https://script.google.com/macros/s/AKfycbxQHUlHAjOO-wshNxqayvPX-Q3rnPRv-b_7cfJYDB0c11az6PbUoGCJ6aKXX4X16HoZ/exec';
-                
-                // Create a unique iframe name to avoid conflicts
-                const iframeName = 'hidden_iframe_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                
-                // Create and append hidden iframe BEFORE creating the form
-                const iframe = document.createElement('iframe');
-                iframe.name = iframeName;
-                iframe.id = iframeName;
-                iframe.style.position = 'fixed';
-                iframe.style.top = '-10000px';
-                iframe.style.left = '-10000px';
-                iframe.style.width = '1px';
-                iframe.style.height = '1px';
-                iframe.style.border = 'none';
-                iframe.style.opacity = '0';
-                iframe.style.pointerEvents = 'none';
-                
-                // Append iframe first
-                document.body.appendChild(iframe);
-                
-                // Wait a tiny bit for iframe to be ready
-                setTimeout(() => {
-                    // Create form element
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = scriptURL;
-                    form.target = iframeName;
-                    form.style.display = 'none';
-                    form.setAttribute('accept-charset', 'UTF-8');
+            // Google Apps Script Web App URL
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbxQHUlHAjOO-wshNxqayvPX-Q3rnPRv-b_7cfJYDB0c11az6PbUoGCJ6aKXX4X16HoZ/exec';
+            
+            // Create a unique iframe name
+            const iframeName = 'gas_iframe_' + Date.now();
+            
+            // Create hidden iframe
+            const iframe = document.createElement('iframe');
+            iframe.name = iframeName;
+            iframe.id = iframeName;
+            iframe.style.cssText = 'position:absolute;width:1px;height:1px;left:-9999px;top:-9999px;border:none;visibility:hidden;';
+            document.body.appendChild(iframe);
+            
+            // Create form that will submit to iframe
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = scriptURL;
+            form.target = iframeName;
+            form.style.cssText = 'display:none;';
+            
+            // Add form fields
+            const data = {
+                name: name,
+                email: email,
+                message: message,
+                timestamp: new Date().toISOString()
+            };
+            
+            Object.keys(data).forEach(key => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = data[key];
+                form.appendChild(input);
+            });
+            
+            document.body.appendChild(form);
+            
+            // Listen for iframe load to know when submission is complete
+            let submissionComplete = false;
+            const checkSubmission = () => {
+                if (!submissionComplete) {
+                    submissionComplete = true;
                     
-                    // Create and append hidden inputs
-                    const fields = {
-                        'name': name,
-                        'email': email,
-                        'message': message,
-                        'timestamp': new Date().toISOString()
-                    };
-                    
-                    for (const [key, value] of Object.entries(fields)) {
-                        const input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = key;
-                        input.value = value;
-                        form.appendChild(input);
-                    }
-                    
-                    // Append form to body
-                    document.body.appendChild(form);
-                    
-                    // Submit form (this will submit to the iframe, not redirect the page)
-                    form.submit();
-                    
-                    // Clean up and show success after a delay
+                    // Clean up
                     setTimeout(() => {
-                        // Remove form and iframe
                         try {
-                            if (form && form.parentNode) {
-                                document.body.removeChild(form);
-                            }
-                            if (iframe && iframe.parentNode) {
-                                document.body.removeChild(iframe);
-                            }
-                        } catch (cleanupError) {
-                            console.log('Cleanup error (non-critical):', cleanupError);
+                            if (form.parentNode) document.body.removeChild(form);
+                            if (iframe.parentNode) document.body.removeChild(iframe);
+                        } catch (err) {
+                            console.log('Cleanup:', err);
                         }
                         
-                        // Show success message
+                        // Show success and reset
                         alert('Thank you for your message! We will get back to you soon.');
                         contactForm.reset();
-                        
-                        // Re-enable button
                         submitButton.disabled = false;
                         submitButton.textContent = originalButtonText;
-                    }, 2000);
-                }, 100);
-                
-            } catch (error) {
-                console.error('Form submission error:', error);
-                alert('Sorry, there was an error sending your message. Please try again later or contact us directly at contact@swiftsitelabs.com');
-                // Re-enable button on error
-                submitButton.disabled = false;
-                submitButton.textContent = originalButtonText;
+                    }, 500);
+                }
+            };
+            
+            // Try to detect when iframe loads (submission complete)
+            try {
+                iframe.onload = checkSubmission;
+            } catch (e) {
+                // Fallback: just wait and assume success
+                setTimeout(checkSubmission, 2000);
             }
+            
+            // Submit the form
+            form.submit();
+            
+            // Fallback timeout in case iframe.onload doesn't fire
+            setTimeout(checkSubmission, 3000);
+            
+        } else {
+            alert('Please fill in all fields.');
         }
     });
 }
