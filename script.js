@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Disable button and show loading state
                 submitButton.disabled = true;
                 submitButton.textContent = 'Sending...';
+                submitButton.style.paddingRight = '2.5rem';
                 
                 try {
                     // Use Vercel serverless function as proxy
@@ -165,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Re-enable button
                     submitButton.disabled = false;
                     submitButton.textContent = originalButtonText;
+                    submitButton.style.paddingRight = '';
                 }
             } else {
                 alert('Please fill in all fields.');
@@ -226,6 +228,36 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.transform = 'translateY(20px)';
         el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         observer.observe(el);
+    });
+    
+    // Staggered animations for service cards
+    const serviceCards = document.querySelectorAll('.service-card');
+    serviceCards.forEach((card, index) => {
+        card.style.transitionDelay = `${index * 0.08}s`;
+    });
+    
+    // Staggered animations for project cards
+    const projectCards = document.querySelectorAll('.project-card');
+    projectCards.forEach((card, index) => {
+        card.style.transitionDelay = `${index * 0.1}s`;
+    });
+    
+    // Staggered animations for review cards
+    const reviewCards = document.querySelectorAll('.review-card');
+    reviewCards.forEach((card, index) => {
+        card.style.transitionDelay = `${index * 0.1}s`;
+    });
+    
+    // Staggered animations for FAQ items
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach((item, index) => {
+        item.style.transitionDelay = `${index * 0.05}s`;
+    });
+    
+    // Staggered animations for process steps
+    const processSteps = document.querySelectorAll('.process-step');
+    processSteps.forEach((step, index) => {
+        step.style.transitionDelay = `${index * 0.1}s`;
     });
 });
 
