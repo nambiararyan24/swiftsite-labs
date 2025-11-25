@@ -356,12 +356,57 @@ section {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: center;
     border: 2px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), rgba(37, 99, 235, 0.3));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-card:hover::before {
+    transform: scaleX(1);
 }
 
 .service-card:hover {
-    transform: translateY(-4px) scale(1.01);
-    box-shadow: var(--shadow-md);
-    border-color: var(--primary-color);
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(37, 99, 235, 0.3);
+}
+
+.service-number {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--primary-color);
+    border-radius: 50%;
+    font-size: 0.875rem;
+    font-weight: 600;
+    opacity: 0.6;
+    transform: scale(1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+}
+
+.service-card:hover .service-number {
+    opacity: 1;
+    transform: scale(1);
+    background: rgba(37, 99, 235, 0.12);
 }
 
 .service-icon {
@@ -374,18 +419,39 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.3s ease, background 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.service-icon::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 1rem;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
 }
 
 .service-card:hover .service-icon {
-    transform: scale(1.05);
+    transform: scale(1.1) rotate(2deg);
     background: rgba(37, 99, 235, 0.15);
+}
+
+.service-card:hover .service-icon::after {
+    opacity: 1;
 }
 
 .service-icon svg {
     width: 28px;
     height: 28px;
     stroke-width: 1.5;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-card:hover .service-icon svg {
+    filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.3));
 }
 
 .service-card h3 {
@@ -1581,126 +1647,6 @@ section {
     .modal-message {
         font-size: 0.9375rem;
         margin-bottom: 1.5rem;
-    }
-}
-
-/* Cookie Consent Banner */
-.cookie-consent {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--bg-white);
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 10000;
-    padding: 1.5rem 2rem;
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border-top: 1px solid var(--border-color);
-}
-
-.cookie-consent.show {
-    transform: translateY(0);
-}
-
-.cookie-consent-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-}
-
-.cookie-consent-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin: 0;
-    line-height: 1.3;
-}
-
-.cookie-consent-text {
-    font-size: 1rem;
-    color: var(--text-dark);
-    line-height: 1.6;
-    margin: 0;
-}
-
-.cookie-consent-buttons {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.cookie-btn {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 500;
-    border: 2px solid #10b981;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: inherit;
-    white-space: nowrap;
-}
-
-.cookie-btn-customize,
-.cookie-btn-reject {
-    background: var(--bg-white);
-    color: var(--text-dark);
-    border-color: #10b981;
-}
-
-.cookie-btn-customize:hover,
-.cookie-btn-reject:hover {
-    background: #f0fdf4;
-    border-color: #059669;
-    transform: translateY(-1px);
-}
-
-.cookie-btn-accept {
-    background: #10b981;
-    color: white;
-    border-color: #10b981;
-}
-
-.cookie-btn-accept:hover {
-    background: #059669;
-    border-color: #059669;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
-}
-
-.cookie-btn:active {
-    transform: translateY(0);
-}
-
-/* Mobile Cookie Consent */
-@media (max-width: 767px) {
-    .cookie-consent {
-        padding: 1.25rem 1.5rem;
-    }
-
-    .cookie-consent-content {
-        gap: 1rem;
-    }
-
-    .cookie-consent-title {
-        font-size: 1.25rem;
-    }
-
-    .cookie-consent-text {
-        font-size: 0.9375rem;
-    }
-
-    .cookie-consent-buttons {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .cookie-btn {
-        width: 100%;
-        padding: 0.875rem 1.5rem;
     }
 }
 

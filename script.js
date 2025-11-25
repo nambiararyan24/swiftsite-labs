@@ -184,6 +184,17 @@ const observer = new IntersectionObserver((entries) => {
         if (entry.isIntersecting) {
             entry.target.style.opacity = '1';
             entry.target.style.transform = 'translateY(0)';
+            
+            // Animate service numbers when card comes into view
+            if (entry.target.classList.contains('service-card')) {
+                const serviceNumber = entry.target.querySelector('.service-number');
+                if (serviceNumber) {
+                    setTimeout(() => {
+                        serviceNumber.style.opacity = '0.6';
+                        serviceNumber.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
         }
     });
 }, observerOptions);
@@ -228,10 +239,15 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
     
-    // Staggered animations for service cards
+    // Staggered animations for service cards with enhanced timing
     const serviceCards = document.querySelectorAll('.service-card');
     serviceCards.forEach((card, index) => {
-        card.style.transitionDelay = `${index * 0.08}s`;
+        card.style.transitionDelay = `${index * 0.1}s`;
+        // Animate numbered badges with slight delay after card appears
+        const serviceNumber = card.querySelector('.service-number');
+        if (serviceNumber) {
+            serviceNumber.style.transition = `all 0.4s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1 + 0.3}s`;
+        }
     });
     
     // Staggered animations for project cards
@@ -257,80 +273,5 @@ document.addEventListener('DOMContentLoaded', () => {
     processSteps.forEach((step, index) => {
         step.style.transitionDelay = `${index * 0.1}s`;
     });
-});
-
-// Cookie Consent Banner
-document.addEventListener('DOMContentLoaded', () => {
-    const cookieConsent = document.getElementById('cookieConsent');
-    const cookieAccept = document.getElementById('cookieAccept');
-    const cookieReject = document.getElementById('cookieReject');
-    const cookieCustomize = document.getElementById('cookieCustomize');
-
-    // Check if user has already made a choice
-    const cookieChoice = localStorage.getItem('cookieConsent');
-    
-    if (!cookieChoice) {
-        // Show banner after a short delay for better UX
-        setTimeout(() => {
-            cookieConsent.classList.add('show');
-        }, 1000);
-    }
-
-    // Accept All - Store analytics and marketing cookies
-    if (cookieAccept) {
-        cookieAccept.addEventListener('click', () => {
-            localStorage.setItem('cookieConsent', 'accepted');
-            localStorage.setItem('cookiePreferences', JSON.stringify({
-                necessary: true,
-                analytics: true,
-                marketing: true
-            }));
-            hideCookieBanner();
-        });
-    }
-
-    // Reject All - Only necessary cookies
-    if (cookieReject) {
-        cookieReject.addEventListener('click', () => {
-            localStorage.setItem('cookieConsent', 'rejected');
-            localStorage.setItem('cookiePreferences', JSON.stringify({
-                necessary: true,
-                analytics: false,
-                marketing: false
-            }));
-            hideCookieBanner();
-        });
-    }
-
-    // Customize - For future implementation, you can add a modal with cookie categories
-    if (cookieCustomize) {
-        cookieCustomize.addEventListener('click', () => {
-            // For now, treat customize as accept all
-            // You can implement a detailed cookie preferences modal here
-            localStorage.setItem('cookieConsent', 'customized');
-            localStorage.setItem('cookiePreferences', JSON.stringify({
-                necessary: true,
-                analytics: true,
-                marketing: false
-            }));
-            hideCookieBanner();
-        });
-    }
-
-    function hideCookieBanner() {
-        cookieConsent.classList.remove('show');
-        setTimeout(() => {
-            cookieConsent.style.display = 'none';
-        }, 400); // Wait for animation to complete
-    }
-
-    // Optional: Initialize analytics based on consent
-    if (cookieChoice === 'accepted' || cookieChoice === 'customized') {
-        const preferences = JSON.parse(localStorage.getItem('cookiePreferences') || '{}');
-        if (preferences.analytics) {
-            // Initialize analytics here (e.g., Google Analytics)
-            // Example: gtag('consent', 'update', { 'analytics_storage': 'granted' });
-        }
-    }
 });
 
