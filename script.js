@@ -131,7 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Disable button and show loading state
                 submitButton.disabled = true;
                 submitButton.textContent = 'Sending...';
-                submitButton.style.paddingRight = '2.5rem';
                 
                 try {
                     // Use Vercel serverless function as proxy
@@ -166,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Re-enable button
                     submitButton.disabled = false;
                     submitButton.textContent = originalButtonText;
-                    submitButton.style.paddingRight = '';
                 }
             } else {
                 alert('Please fill in all fields.');
