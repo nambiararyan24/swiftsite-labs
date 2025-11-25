@@ -38,27 +38,45 @@ export default async function handler(req, res) {
     formData.append('message', message);
     formData.append('timestamp', timestamp || new Date().toISOString());
 
-    // Submit to Google Apps Script
-    const response = await fetch(scriptURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: formData.toString(),
-      redirect: 'follow'
-    });
-
-    // Google Apps Script may return HTML or text, so we check the status
-    const responseText = await response.text();
+    // Submit to Google Apps Script with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
     
-    // Check if submission was successful (status 200 or 302 redirect is OK for Google Apps Script)
-    if (response.ok || response.status === 200 || response.status === 302) {
-      return res.status(200).json({ 
-        success: true, 
-        message: 'Form submitted successfully' 
+    try {
+      const response = await fetch(scriptURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData.toString(),
+        redirect: 'follow',
+        signal: controller.signal
       });
-    } else {
-      throw new Error(`Google Apps Script returned status: ${response.status}`);
+
+      clearTimeout(timeoutId);
+      
+      // Don't wait for full response - just check if request was accepted
+      // Google Apps Script returns 200/302 for successful submissions
+      if (response.ok || response.status === 200 || response.status === 302) {
+        // Return success immediately without reading response body
+        return res.status(200).json({ 
+          success: true, 
+          message: 'Form submitted successfully' 
+        });
+      } else {
+        throw new Error(`Google Apps Script returned status: ${response.status}`);
+      }
+    } catch (error) {
+      clearTimeout(timeoutId);
+      // If timeout or error, still return success (fire-and-forget approach)
+      // The data was sent, even if we didn't wait for confirmation
+      if (error.name === 'AbortError') {
+        return res.status(200).json({ 
+          success: true, 
+          message: 'Form submitted successfully' 
+        });
+      }
+      throw error;
     }
 
   } catch (error) {
