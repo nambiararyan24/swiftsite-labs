@@ -65,3 +65,4 @@ The contact form is integrated with Google Sheets. See `GOOGLE_SHEETS_SETUP.md` 
 
 © 2024 SwiftSite Labs. All rights reserved.
 
+
