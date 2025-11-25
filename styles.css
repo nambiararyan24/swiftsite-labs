@@ -83,11 +83,20 @@ button {
     color: var(--primary-color);
     text-decoration: none;
     cursor: pointer;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .logo:hover {
-    opacity: 0.8;
+    opacity: 0.85;
+    transform: translateY(-1px);
+}
+
+.logo-icon {
+    transition: transform 0.3s ease;
+}
+
+.logo:hover .logo-icon {
+    transform: scale(1.05);
 }
 
 .logo-icon {
@@ -118,6 +127,7 @@ button {
 
 .nav-links a:hover {
     color: var(--primary-color);
+    transform: translateY(-1px);
 }
 
 .nav-links a::after {
@@ -281,6 +291,9 @@ section {
 .section-header {
     text-align: center;
     margin-bottom: 4rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 .section-title {
@@ -319,11 +332,13 @@ section {
     box-shadow: var(--shadow-sm);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: center;
+    border: 2px solid var(--border-color);
 }
 
 .service-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px) scale(1.01);
     box-shadow: var(--shadow-md);
+    border-color: var(--primary-color);
 }
 
 .service-icon {
@@ -464,6 +479,12 @@ section {
     padding: 1rem;
     background: var(--bg-light);
     border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    background: rgba(37, 99, 235, 0.05);
+    transform: translateX(4px);
 }
 
 .feature-item svg {
@@ -472,6 +493,11 @@ section {
     stroke-width: 2;
     color: var(--primary-color);
     flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover svg {
+    transform: translateX(2px) scale(1.1);
 }
 
 .feature-item span {
@@ -495,6 +521,16 @@ section {
 .process-step {
     text-align: center;
     position: relative;
+    transition: all 0.3s ease;
+}
+
+.process-step:hover {
+    transform: translateY(-4px);
+}
+
+.process-step:hover .process-icon {
+    transform: scale(1.1);
+    color: var(--primary-dark);
 }
 
 .process-icon {
@@ -505,6 +541,7 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s ease;
 }
 
 .process-icon svg {
@@ -528,6 +565,12 @@ section {
     font-size: 0.875rem;
     font-weight: 700;
     box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.process-step:hover .process-number {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-md);
 }
 
 .process-title {
@@ -568,10 +611,12 @@ section {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
 }
 
 .project-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px) scale(1.01);
     box-shadow: var(--shadow-md);
     border-color: var(--primary-color);
 }
@@ -651,6 +696,14 @@ section {
     transition: all 0.3s ease;
     margin-top: auto;
     width: fit-content;
+    opacity: 0.9;
+}
+
+.project-link:hover {
+    opacity: 1;
+    background: var(--primary-color);
+    color: white;
+    transform: translateX(2px);
 }
 
 .project-link svg {
@@ -666,7 +719,7 @@ section {
 }
 
 .project-link:hover svg {
-    transform: translateX(2px);
+    transform: translateX(4px);
 }
 
 /* Reviews Section */
@@ -692,10 +745,12 @@ section {
     gap: 1.5rem;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-sm);
+    opacity: 0;
+    transform: translateY(20px);
 }
 
 .review-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px) scale(1.01);
     box-shadow: var(--shadow-md);
     border-color: var(--primary-color);
 }
@@ -755,11 +810,14 @@ section {
     overflow: hidden;
     transition: all 0.3s ease;
     background: var(--bg-white);
+    opacity: 0;
+    transform: translateY(10px);
 }
 
 .faq-item:hover {
     border-color: var(--primary-color);
     box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
 }
 
 .faq-question {
@@ -913,11 +971,18 @@ section {
     background: var(--bg-white);
 }
 
+.form-group input:hover,
+.form-group textarea:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.05);
+}
+
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
 }
 
 .form-group textarea {
