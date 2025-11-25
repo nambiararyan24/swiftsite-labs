@@ -259,3 +259,78 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Cookie Consent Banner
+document.addEventListener('DOMContentLoaded', () => {
+    const cookieConsent = document.getElementById('cookieConsent');
+    const cookieAccept = document.getElementById('cookieAccept');
+    const cookieReject = document.getElementById('cookieReject');
+    const cookieCustomize = document.getElementById('cookieCustomize');
+
+    // Check if user has already made a choice
+    const cookieChoice = localStorage.getItem('cookieConsent');
+    
+    if (!cookieChoice) {
+        // Show banner after a short delay for better UX
+        setTimeout(() => {
+            cookieConsent.classList.add('show');
+        }, 1000);
+    }
+
+    // Accept All - Store analytics and marketing cookies
+    if (cookieAccept) {
+        cookieAccept.addEventListener('click', () => {
+            localStorage.setItem('cookieConsent', 'accepted');
+            localStorage.setItem('cookiePreferences', JSON.stringify({
+                necessary: true,
+                analytics: true,
+                marketing: true
+            }));
+            hideCookieBanner();
+        });
+    }
+
+    // Reject All - Only necessary cookies
+    if (cookieReject) {
+        cookieReject.addEventListener('click', () => {
+            localStorage.setItem('cookieConsent', 'rejected');
+            localStorage.setItem('cookiePreferences', JSON.stringify({
+                necessary: true,
+                analytics: false,
+                marketing: false
+            }));
+            hideCookieBanner();
+        });
+    }
+
+    // Customize - For future implementation, you can add a modal with cookie categories
+    if (cookieCustomize) {
+        cookieCustomize.addEventListener('click', () => {
+            // For now, treat customize as accept all
+            // You can implement a detailed cookie preferences modal here
+            localStorage.setItem('cookieConsent', 'customized');
+            localStorage.setItem('cookiePreferences', JSON.stringify({
+                necessary: true,
+                analytics: true,
+                marketing: false
+            }));
+            hideCookieBanner();
+        });
+    }
+
+    function hideCookieBanner() {
+        cookieConsent.classList.remove('show');
+        setTimeout(() => {
+            cookieConsent.style.display = 'none';
+        }, 400); // Wait for animation to complete
+    }
+
+    // Optional: Initialize analytics based on consent
+    if (cookieChoice === 'accepted' || cookieChoice === 'customized') {
+        const preferences = JSON.parse(localStorage.getItem('cookiePreferences') || '{}');
+        if (preferences.analytics) {
+            // Initialize analytics here (e.g., Google Analytics)
+            // Example: gtag('consent', 'update', { 'analytics_storage': 'granted' });
+        }
+    }
+});
+
